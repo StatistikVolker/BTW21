@@ -1,8 +1,8 @@
 # BTW21
 
-1 Schritt:
-Datei erstellen mit create_brwdata.R
+1 Schritt
+Masterdatei 000_meta_btw.R steuert durch gesamten Programmablauf
 
-2 Schritt:
-Karten mit create_wk_map.r erstellen
+2 Schritt
+Baustelle derzeit 021_Cartogramme_Erstimmengewinner.r - dafür müssen in 000_meta_btw.R die Zeilen 1-25 ausgeführt werden)
 
