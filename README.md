@@ -1,5 +1,8 @@
 # BTW21
 
+0 Schritt:
+Ordner maps im Arbeitsverzwichnis anlegen
+
 1 Schritt:
 Datei erstellen mit create_brwdata.R
 
