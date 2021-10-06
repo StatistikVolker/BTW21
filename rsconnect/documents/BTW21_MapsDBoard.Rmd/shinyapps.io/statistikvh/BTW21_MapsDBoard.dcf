@@ -1,0 +1,13 @@
+name: BTW21_MapsDBoard
+title: BTW21_MapsDBoard
+username:
+account: statistikvh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4814302
+bundleId: 5111702
+url: https://statistikvh.shinyapps.io/BTW21_MapsDBoard/
+when: 1633549905.09772
+asMultiple: FALSE
+asStatic: FALSE
+additionalFiles: DataCartogram/JenaParteihochburg_AfD_1_byAnzahl-10.Rdata|DataCartogram/JenaParteihochburg_AfD_2_byAnzahl-10.Rdata|DataCartogram/JenaParteihochburg_FDP_1_byAnzahl-10.Rdata|DataCartogram/JenaParteihochburg_FDP_2_byAnzahl-10.Rdata|DataCartogram/JenaParteihochburg_GR?NE_1_byAnzahl-10.Rdata|DataCartogram/JenaParteihochburg_GR?NE_2_byAnzahl-10.Rdata|DataCartogram/JenaParteihochburg_LINKE_1_byAnzahl-10.Rdata|DataCartogram/JenaParteihochburg_LINKE_2_byAnzahl-10.Rdata|DataCartogram/JenaParteihochburg_SPD_1_byAnzahl-10.Rdata|DataCartogram/JenaParteihochburg_SPD_2_byAnzahl-10.Rdata|DataCartogram/JenaParteihochburg_UNION_1_byAnzahl-10.Rdata|DataCartogram/JenaParteihochburg_UNION_2_byAnzahl-10.Rdata|DataCartogram/JenaWahlkreisgewinner_1_byAnzahl-10.Rdata|DataCartogram/JenaWahlkreisgewinner_2_byAnzahl-10.Rdata
