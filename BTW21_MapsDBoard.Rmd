@@ -1,0 +1,335 @@
+---
+title: "Covid 19 in Jena"
+author: Volker Holzendorf, FD Controlling und Statistik
+output: 
+  flexdashboard::flex_dashboard:
+    
+    orientation: rows
+    vertical_layout: fill
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+source("R-Codes/001_packages_variables_DB.r")
+
+# Icons:
+# https://fontawesome.com/v5.15/icons?d=gallery
+# https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free
+# Link to use Icons in R:
+# https://www.displayr.com/adding-icons-to-dashboards-using-font-awesome/
+
+# Farben für für die Linien festlegen
+Indikatorencols <- c("darkblue","darkgreen","orange")
+
+#C19JTH_data <- function() {
+#  read.csv2("https://www.tmasgff.de/fileadmin/user_upload/Gesundheit/COVID-19/Eindaemmungskonzept/Tagesuebersichten/#Uebersicht_Eindaemmungserlass.csv")
+#}
+
+
+  
+  
+# Datenladen
+source("R-Codes/101_load_FWarnTh_Data.R")
+
+# Indikatorenfestlegung
+#Indikatorenval <- unique(C19JTH2$Warnstufenindikator)
+Indikatorenval <- c("prozentuale ITS-Belegung","7-Tage-Inzidenz","Hospitalisierungsinzidenz","aktuelle Warnstufe")
+
+# Datumsbereich der Grafiken anzeigen
+mindat <- ceiling_date(as.Date(min(C19JTH2$Datum)),unit = "week")#;mindat
+maxdat <- ceiling_date(as.Date(max(C19JTH2$Datum)),unit = "week")#;maxdat
+
+
+source("R-Codes/mkr_C19JFWplot.r")
+source("R-Codes/mkr_C19JFWplot_ia.r")
+
+```
+
+
+Frühwarnsystem Thüringen
+=======================================================================
+
+Sidebar {.sidebar}
+-----------------------------------------------------------------------
+
+### Thüringer Land- oder Stadtkreise
+
+
+
+```{r}
+# LK Auswahl
+SKwahl <- grep( "SK", unique(C19JTH2$LK), ignore.case = TRUE, value = TRUE )
+LKwahl <- grep( "LK", unique(C19JTH2$LK), ignore.case = TRUE, value = TRUE )
+SKLKwahl <- c(SKwahl,LKwahl)
+selectInput("selectSKLK",
+            "Wähle einen Stadt- bzw. Landkreis",
+            SKLKwahl,
+            selected = "SK Jena",
+            multiple = FALSE)
+
+
+# Vergelichs SK
+SKwahl <- grep( "SK", unique(C19JTH2$LK), ignore.case = TRUE, value = TRUE )
+selectInput("selectSK", 
+            "Wähle eine Vergleichsstadtkreis",
+            SKwahl,
+            selected = "",
+            multiple = TRUE)
+
+# Vergelichs SK
+LKwahl <- grep( "LK", unique(C19JTH2$LK), ignore.case = TRUE, value = TRUE )
+selectInput("selectLK", 
+            "Wähle eine Vergleichslandkreis",
+            LKwahl,
+            selected = "",
+            multiple = TRUE)
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Datum {.value-box}
+
+
+
+```{r}
+
+# 
+selectedSKLK <- reactive({
+  input$selectSKLK
+})
+
+
+# dlWarnstufe ist eine reactive expression das die aktuelle Warnstufe für Jena ausgibt.
+dlDatum <- reactive({
+  C19JTH2 %>% 
+  filter(LK %in% selectedSKLK() & Warnstufenindikator == "aktuelle Warnstufe" & Datum == max(Datum)) %>%
+  pull(Datum)
+})
+# Emit the download count
+renderValueBox({
+  valueBox(format(as.Date(dlDatum()),"%A, %d.%B %Y"), icon = "fa-calendar", color = "cornflowerblue")
+})
+```
+
+### aktuelle Warnstufe {.value-box}
+
+```{r}
+# dlWarnstufe ist eine reactive expression das die aktuelle Warnstufe für Jena ausgibt.
+dlWarnstufe <- reactive({
+  C19JTH2 %>% 
+  filter(LK %in% selectedSKLK() & Warnstufenindikator == "aktuelle Warnstufe" & Datum == max(Datum)) %>%
+  pull(Werte)
+ })
+
+render
+warncol1 <- reactive({
+  warncol = "forestgreen"
+  if (dlWarnstufe() == 1) warncol = "gold"
+  if (dlWarnstufe() == 2) warncol = "orange"
+  if (dlWarnstufe() == 3) warncol = "darkred"
+  warncol
+})
+
+# Emit the download count
+renderValueBox({
+  valueBox(dlWarnstufe(),            
+           caption = (paste0("aktuelle Warnstufe","<br>",selectedSKLK())),
+           icon = "fa-warning", 
+           color = warncol1())
+})
+```
+
+Row
+-----------------------------------------------------------------------
+
+
+### 7-Tages-Inzidenz {.value-box}
+
+```{r}
+# dlWarnstufe ist eine reactive expression das die aktuelle Warnstufe für Jena ausgibt.
+dl7dI <- reactive({
+  C19JTH2 %>% 
+    filter(LK %in% selectedSKLK() & Warnstufenindikator == Indikatorenval[2] & Datum == max(Datum)) %>%
+    pull(Werte)
+})
+
+warncol2 <- reactive({
+  warncol = "forestgreen"
+  if (dl7dI() >  35) warncol = "gold"
+  if (dl7dI() > 100) warncol = "orange"
+  if (dl7dI() > 200) warncol = "darkred"
+  warncol
+})
+# Emit the download count
+renderValueBox({
+  valueBox(dl7dI(), 
+           caption = (paste0("7-Tages-Inzidenz","<br>",selectedSKLK())),
+           icon = "fa-chart-line", 
+           color = warncol2())
+})
+```
+
+
+### Hospitalisierungsinzidenz {.value-box}
+
+```{r}
+# dlWarnstufe ist eine reactive expression das die aktuelle Warnstufe für Jena ausgibt.
+dlHospI <- reactive({
+  C19JTH2 %>% 
+    filter(LK %in% selectedSKLK() & Warnstufenindikator == Indikatorenval[3] & Datum == max(Datum)) %>%
+    pull(Werte)
+})
+
+warncol3 <- reactive({
+  warncol = "forestgreen"
+  if (dlHospI() >  4) warncol = "gold"
+  if (dlHospI() >  7) warncol = "orange"
+  if (dlHospI() > 12) warncol = "darkred"
+  warncol
+})
+
+# Emit the download count
+renderValueBox({
+  valueBox(dlHospI(), 
+           caption = (paste0("Hospitalisierungsinzidenz","<br>",selectedSKLK())),
+           icon = "fa-ambulance", 
+           color = warncol3())
+})
+```
+
+
+### prozentuale ITS-Belegung in ganz Thüringen {.value-box}
+
+```{r}
+# dlWarnstufe ist eine reactive expression das die aktuelle Warnstufe für Jena ausgibt.
+dlITS <- 
+  C19JTH2 %>% 
+    filter(LK_Nr == min(LK_Nr) & Datum == max(Datum)) %>%
+    pull(Werte)
+
+warncol4 = "forestgreen"
+if (dlITS >  3) warncol4 = "gold"
+if (dlITS >  6) warncol4 = "orange"
+if (dlITS > 12) warncol4 = "darkred"
+
+# Emit the download count
+
+renderValueBox({
+  valueBox(dlITS,           
+           caption = (paste0("prozentuale ITS-Belegung","<br>","Thüringen")),
+           icon = "fa-bed", 
+           color = warncol4)
+})
+```
+
+
+
+Row 
+-----------------------------------------------------------------------
+
+<!-- Indikator 1: 7-Tage-Inzidenz -->
+
+### 
+
+```{r}
+selectedSK <- reactive({
+  c(selectedSKLK(),input$selectSK,input$selectLK)
+})
+
+#print(selectedSK())
+
+# Datensatz
+#Indikator <- Indikatorenval[2]
+dfplot1 <- reactive({
+  C19JTH2 %>% filter(LK %in% selectedSK() & Warnstufenindikator == Indikatorenval[2]) 
+})
+
+
+renderPlotly({
+  p1 <- mkr.C19JFWplot_ia(
+    dfplot = dfplot1(), #dataset
+    Indikator = Indikatorenval[2], # Warnndikator
+    vglLKs = selectedSK(),
+    Fusszeile = "7-Tage-Inzidenz: tägliche Linelist des Thüringer Landesamt für Verbraucherschutz", #
+    warnstufeny = c(35,100,200), # Vector der Warnstufen
+    warncols = c("gold","orange","red"),
+    linecol = Indikatorencols[2], # Farbe der Linie
+    ystepv = c(10,25,50), # y-Achsen Werte
+    maxy = max(dfplot1()$Werte), # maximaler y Wert
+    mindat = mindat, # Minimales Datum
+    maxdat = maxdat, # maximales Datum
+    stepdat = "week"
+    
+  )
+  p1 %>% ggplotly(tooltip = c("y", "x","alpha")) %>% layout(legend = list(orientation = 'h'))
+
+})
+
+
+
+```
+
+<!-- Indikator 2: Hospitalisierungsinzidenz -->
+
+### 
+
+```{r}
+# Datensatz
+dfplot2 <- reactive({
+  C19JTH2 %>% filter(LK %in% selectedSK() & Warnstufenindikator == Indikatorenval[3]) 
+})
+
+# Plotcode
+renderPlotly({
+  p2 <- mkr.C19JFWplot_ia(
+    dfplot = dfplot2(), #dataset
+    Indikator = Indikatorenval[3], # Warnndikator
+    vglLKs = selectedSK(),
+    Fusszeile = "Hospitalisierungsinzidenz: tägliche Linelist des Thüringer Landesamt für Verbraucherschutz\n(Erfassung nach Meldedatum und Wohnort des Erkrankten sowie von Fällen 'wegen' und 'mit' Covid-19)", #
+    warnstufeny = c(4,7,12), # Vector der Warnstufen
+    warncols = c("gold","orange","red"),
+    linecol = Indikatorencols[3], # Farbe der Linie
+    ystepv = c(0.5,1,2), # y-Achsen Werte
+    maxy = max(dfplot2()$Werte), # maximaler y Wert
+    mindat = mindat, # Minimales Datum
+    maxdat = maxdat, # maximales Datum
+    stepdat = "week")
+  p2 %>% ggplotly(tooltip = c("y", "x","alpha")) %>% layout(legend = list(orientation = 'h'))
+})
+
+```
+
+<!-- Indikator 3: prozentuale ITS-Belegung -->
+
+### 
+
+```{r}
+
+# Datensatz
+dfplot3 <- reactive({
+  C19JTH2 %>% dplyr::filter(LK_Nr == 0)
+})
+
+#substring(C19JTH2$LK, 1, 2)
+
+# Plotcode
+renderPlotly({
+p3 <- mkr.C19JFWplot(
+  dfplot = dfplot3(), #dataset
+  Indikator = Indikatorenval[1], # Warnndikator
+  Fusszeile = "ITS-Belegung: DIVI-Intensivregister, Tagesreport Vortag (Stand: 12:15 Uhr), maßgeblich sind die Erwachsenenbetten", #
+  warnstufeny = c(3,6,12), # Vector der Warnstufen
+  warncols = c("gold","orange","red"),
+  linecol = Indikatorencols[1], # Farbe der Linie
+  ystepv = c(0.2,0.5,1), # y-Achsen Werte
+  maxy = base::max(dfplot3()$Werte,na.rm = TRUE), # maximaler y Wert
+  mindat = mindat, # Minimales Datum
+  maxdat = maxdat, # maximales Datum
+  stepdat = "week")
+  p3 %>% ggplotly(tooltip = c("y", "x")) #%>% layout(legend = list(orientation = 'h'))
+})
+
+
+```
+
