@@ -56,6 +56,7 @@ mkr.btw21karten <- function(
     }
   
   if (party == "CDU/CSU") party <- "CDU"
+  if (party == "CDU/CSU" & Gebiet == "Deutschland") party <- c("CDU","CSU")
   
   if (!(party %in% c("AfD","CDU","CSU","FDP","GR\u00DCNE","DIE LINKE","SPD"))) {
     stop("'party' should be one of 'AfD,CDU,CSU,FDP,GR\u00DCNE,DIE LINKE,SPD'")
@@ -85,11 +86,11 @@ mkr.btw21karten <- function(
   #btw21 <- merge(wk_spdf, BTW21Parteien %>% filter(Stimme == vote & Gruppenname %in% c(party)), by.x="WKR_NR", by.y="Gebietsnummer")
   if (Darstellung == "Parteihochburg") {
     btw21map <- merge(Shapedf, Parteidf %>% filter(Stimme == vote & Gruppenname %in% c(party) ), by.x="WKR_NR", by.y="Gebietsnummer"  )
-    cartodata <- paste0("DataCartogram/Jena",Darstellung,"_",party3,"_",vote,"_","by",cartoweight,"-",itermax,".Rdata")
+    cartodata <- paste0("DataCartogram/",Gebiet,"_",Darstellung,"_",party3,"_",vote,"_","by",cartoweight,"-",itermax,".Rdata")
     
   } else {
     btw21map <- merge(Shapedf, Rangdf %>% filter(Stimme == vote), by.x="WKR_NR", by.y="Gebietsnummer")  
-    cartodata <- paste0("DataCartogram/Jena",Darstellung,"_",vote,"_","by",cartoweight,"-",itermax,".Rdata")
+    cartodata <- paste0("DataCartogram/",Gebiet,"_",Darstellung,"_",vote,"_","by",cartoweight,"-",itermax,".Rdata")
     pal <- colorFactor(
       palette = c('darkblue', 'black', 'purple',"yellow", 'forestgreen',"red"),
       domain = btw21map$Gruppenname,
@@ -98,6 +99,7 @@ mkr.btw21karten <- function(
     )
     
   }
+  #names(btw21map)
   # Transformiere Koordinaten in WGS84
   btw21map <- btw21map %>% 
     st_as_sf() %>%
@@ -139,6 +141,7 @@ mkr.btw21karten <- function(
         summarise(Anzahl = sum(Anzahl), do_union = TRUE) %>%
         ungroup() %>%
         as_Spatial()
+      print("Gebiet Jena")
     }
     if (Gebiet == "Leipzig") {
       btw21_contuegebiet <- btw21_cont %>%
@@ -147,12 +150,13 @@ mkr.btw21karten <- function(
         ungroup() %>%
         as_Spatial()
     }
-    if (Gebiet %in% c("Deutschland","Neue Länder (+Berlin)")) {
+    if (Gebiet %in% c("Deutschland","Neue L\u00E4nder (+Berlin)")) {
       btw21_contuegebiet <- btw21_cont %>%
         group_by(LAND_NR) %>% 
         summarise(Anzahl = sum(Anzahl), do_union = TRUE) %>%
         ungroup() %>%
         as_Spatial()
+      print("Gebiet D, NL")
     }
     #print("Schritt 1")
     if (Darstellung == "Parteihochburg") {
@@ -177,7 +181,7 @@ mkr.btw21karten <- function(
           #Define PopUp Text
           popup = popuptxt
         ) %>%
-        addPolylines(data = btw21_contuegebiet,weight = 2,color = "black")  %>% # plot border of German Länder
+        addPolylines(data = btw21_contuegebiet,weight = 2,color = "black")  %>% # plot border of German Lander
        # Legend
         addLegend("topright",pal = pal,
                   values = ~alpha,
@@ -185,6 +189,7 @@ mkr.btw21karten <- function(
                   opacity = 1)
       #m
       print("Cartogramm_Karte erstellt")  
+      
 
     } else {
       
@@ -202,9 +207,9 @@ mkr.btw21karten <- function(
                     weight=2,
                     fillOpacity = ~alpha,
                     popup = popuptxt) %>%
-        addPolylines(data = btw21_contuegebiet,weight = 2,color = "black") # plot border of German Länder
+        addPolylines(data = btw21_contuegebiet,weight = 2,color = "black") # plot border of German Lander
       }
-    # Draw Map
+    # mDraw Map
   }
   
   if (maptype == "normalmap") {
@@ -240,7 +245,7 @@ mkr.btw21karten <- function(
         ungroup() %>%
         as_Spatial()
     }
-    if (Gebiet %in% c("Deutschland","Neue Länder (+Berlin)")) {
+    if (Gebiet %in% c("Deutschland","Neue L\u00E4nder (+Berlin)")) {
       btw21_uegebiet <- btw21map %>%
         group_by(LAND_NR) %>% 
         summarise(Anzahl = sum(Anzahl), do_union = TRUE) %>%
@@ -276,7 +281,7 @@ mkr.btw21karten <- function(
                     weight=2,
                     fillOpacity = ~(Prozent_Diff/max(Prozent_Diff))+0.25,
                     popup = popuptxt) %>%
-        addPolylines(data = btw21_uegebiet,weight = 2,color = "black") # plot border of German Länder
+        addPolylines(data = btw21_uegebiet,weight = 2,color = "black") # plot border of German Lander
     }
     
   
