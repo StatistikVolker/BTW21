@@ -4,6 +4,8 @@ library(tidyverse)
 library(rgdal) # lädt Shapefiles
 require(readxl)
 library(stringr)
+library(sp)
+library(sf)
 
 
 
@@ -15,7 +17,7 @@ BTW21Jall <- read_xlsx("Daten/Jena/BW21191E_VH.xlsx",skip = 13)
 
 # Datensatz Parteihochburg ------------------------------------------------
 
-BTW21Parteien <- BTW21Jall %>% 
+BTW21JParteien <- BTW21Jall %>% 
   select(Gebietsnummer = WBZnr,Gebietsname = WBZName,starts_with("1st"),starts_with("2nd")) %>%
   pivot_longer(cols = -c(Gebietsnummer,Gebietsname,),
                names_to = "Gruppenname",
@@ -45,7 +47,7 @@ BTW21Parteien <- BTW21Jall %>%
 
 # Datensatz Wahlkreisgewinner ---------------------------------------------
 
-BTW21Rang <- BTW21Parteien %>%   # den Rang nach Stimmenanzahl
+BTW21JRang <- BTW21JParteien %>%   # den Rang nach Stimmenanzahl
   filter(Rang < 3)  %>% # nur Platz 1 und 2
   mutate(Gruppenname = factor(Gruppenname,levels = c("AfD","CDU","DIE LINKE","FDP","GRÜNE","SPD"))) %>%
   arrange(Gebietsnummer,Stimme, Rang) %>% # nach Rang sortieren
@@ -57,26 +59,25 @@ BTW21Rang <- BTW21Parteien %>%   # den Rang nach Stimmenanzahl
          Prozent_Diff = Prozent_1 - Prozent_2) %>% # Differenz nach Prozent 
   rename(Gruppenname = Gruppenname_1,Anzahl = Anzahl_1, Prozent = Prozent_1)
 
-levels(BTW21Rang$Gruppenname)
 
 # Shapedatei Wahlbezirke --------------------------------------------------
 
-BTW21wk_shapes <- readOGR( 
+BTW21Jwk_shapes <- readOGR( 
   dsn= "Daten/Jena" , 
   layer="PLR_WBZ_2021",
   verbose=FALSE
 ) 
 # KBZ_NR ins richtige Forma fürs Matchen bringen
-BTW21wk_shapes <- BTW21wk_shapes %>% 
+BTW21Jwk_shapes <- BTW21Jwk_shapes %>% 
   st_as_sf() %>% 
   mutate("WKR_NR" =str_pad(gid_2, 4, pad = "0")) %>%
   st_transform(4326) %>% 
   as_Spatial()
-class(BTW21wk_shapes)
+class(BTW21Jwk_shapes)
 
 # abspeichern -------------------------------------------------------------
 
-save(BTW21Parteien,BTW21Rang,BTW21wk_shapes, file= "Daten/BTW21Jena.RData")  
+save(BTW21JParteien,BTW21JRang,BTW21Jwk_shapes, file= "Daten/BTW21Jena.RData")  
 
 
 
