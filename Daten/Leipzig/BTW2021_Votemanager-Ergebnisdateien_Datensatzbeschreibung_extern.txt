@@ -1,0 +1,72 @@
+Feldbezeichner;Feldinhalt
+datum;Datum des Wahltermins = „26.09.2021“
+wahl;Name der Wahl = „Bundestagswahl“
+ags;Amtlicher Gemeindeschlüssel der Behörde = „14713000“
+gebiet-nr;Nummer der Gebietseinheit, Z.B. Wahlkreis-, Wahlbezirks- oder Ortsteilnummer
+gebiet-name;Name der Gebietseinheit, z.B. Wahlkreis- oder Ortsteilname (bei Wahlbezirken sind Nummer und Name identisch)
+max-schnellmeldungen;Anzahl an insgesamt erwarteten Ergebnismeldungen (entspricht Anzahl der Wahlbezirke in der betreffenden Gebietseinheit; bei Stadtergebnis, Gemeinden (Wahlkreis 152), Gemeinden (Wahlkreis 153), Bezirke (Wahlkreis 152), Bezirke (Wahlkreis 153) und Wahlbezirk = 1, bei Stadtbezirk, Ortsteil = Anzahl der Wahlbezirke im Stadtbezirk bzw. Ortsteil)
+anz-schnellmeldungen;Anzahl an bisher eingegangenen Ergebnismeldungen in der Gebietseinheit: 0 = noch kein Ergebnis gemeldet
+A1;Wahlberechtigte laut Wählerverzeichnis ohne Sperrvermerk 'W' (Wahlscheininhaber)
+A2;Wahlberechtigte laut Wählerverzeichnis mit Sperrvermerk 'W' (Wahlscheininhaber)
+A3;Wahlberechtigte, die nicht im Wählerverzeichnis aufgeführt sind
+A;Wahlberechtigte insgesamt (= A1 + A2 + A3)
+B;Wähler
+B1;Wähler mit Wahlschein
+C;Ungültige Erststimmen
+D;Gültige Erststimmen
+E;Ungültige Zweitstimmen
+F;Gültige Zweitstimmen
+D1;Erststimmen für Neumann, Christoph - AfD (WK 152) / Droese, Siegbert - AfD (WK 153)
+F1;Zweitstimmen für Alternative für Deutschland (AfD)
+D2;Erststimmen für Lehmann, Jens - CDU (WK 152) / Heller, Jessica - CDU (WK 153)
+F2;Zweitstimmen für Christlich Demokratische Union Deutschlands (CDU)
+D3;Erststimmen für Treu, Nina Sophie - DIE LINKE (WK 152) / Pellmann, Sören - DIE LINKE (WK 153)
+F3;Zweitstimmen für DIE LINKE (DIE LINKE)
+D4;Erststimmen für Mann, Holger - SPD (WK 152) / Sthamer, Nadja - SPD (WK 153)
+F4;Zweitstimmen für Sozialdemokratische Partei Deutschlands (SPD)
+D5;Erststimmen für Hobusch, René - FDP (WK 152) / Jess, Peter - FDP (WK 153)
+F5;Zweitstimmen für Freie Demokratische Partei (FDP)
+D6;Erststimmen für Müser, Marie Rose - GRÜNE (WK 152) / Dr. Piechotta, Paula - GRÜNE (WK 153)
+F6;Zweitstimmen für BÜNDNIS 90/DIE GRÜNEN (GRÜNE)
+D7;nicht besetzt, da keine Bewerber im WK 152 und 153
+F7;Zweitstimmen für PARTEI MENSCH UMWELT TIERSCHUTZ (Tierschutzpartei)
+D8;Erststimmen für Subat, Katharina Christina - Die PARTEI (WK 152) / Kumbernuß, Thomas - Die PARTEI (WK 153)
+F8;Zweitstimmen für Partei für Arbeit, Rechtsstaat, Tierschutz, Elitenförderung und basisdemokratische Initiative (Die PARTEI)
+D9;nicht besetzt, da keine Bewerber im WK 152 und 153
+F9;Zweitstimmen für Nationaldemokratische Partei Deutschlands (NPD)
+D10;Erststimmen für Weidinger, Thomas - FREIE WÄHLER (WK 152) / Soudah, André - FREIE WÄHLER (WK 153)
+F10;Zweitstimmen für FREIE WÄHLER (FREIE WÄHLER)
+D11;Erststimmen Köhler, Thomas - PIRATEN (WK 153; im WK 152 nicht besetzt, da kein Bewerber)
+F11;Zweitstimmen für Piratenpartei Deutschland (PIRATEN)
+D12;Erststimmen für Wehemeyer-Blum, Rahel - ÖDP (WK 152) / Kretschmer, Tobias - ÖDP (WK 153)
+F12;Zweitstimmen für Ökologisch-Demokratische Partei (ÖDP)
+D13;nicht besetzt, da keine Bewerber im WK 152 und 153
+F13;Zweitstimmen für V-Partei³ - Partei für Veränderung, Vegetarier und Veganer (V-Partei³)
+D14;Erststimmen für Kimmerle, Gudrun - MLPD (WK 152) / Gäbel, Philipp - MLPD (WK 153)
+F14;Zweitstimmen für Marxistisch-Leninistische Partei Deutschlands (MLPD)
+D15;Erststimmen für Cherki, Kerry Charles - dieBasis (WK 152) / Rabold, Matti - dieBasis (WK 153)
+F15;Zweitstimmen für Basisdemokratische Partei Deutschland (dieBasis)
+D16;nicht besetzt, da keine Bewerber im WK 152 und 153
+F16;Zweitstimmen für Bündnis C - Christen für Deutschland (Bündnis C)
+D17;nicht besetzt, da keine Bewerber im WK 152 und 153
+F17;Zweitstimmen für DER DRITTE WEG (III. Weg)
+D18;nicht besetzt, da keine Bewerber im WK 152 und 153
+F18;Zweitstimmen für Deutsche Kommunistische Partei (DKP)
+D19;Erststimmen für Weidner, Kristina - Die Humanisten (WK 152) / Lehn, Jonas - Die Humanisten (WK 153)
+F19;Zweitstimmen für Partei der Humanisten (Die Humanisten)
+D20;nicht besetzt, da keine Bewerber im WK 152 und 153
+F20;Zweitstimmen für Partei für Gesundheitsforschung (Gesundheitsforschung)
+D21;nicht besetzt, da keine Bewerber im WK 152 und 153
+F21;Zweitstimmen für Team Todenhöfer - Die Gerechtigkeitspartei (Team Todenhöfer)
+D22;nicht besetzt, da keine Bewerber im WK 152 und 153
+F22;Zweitstimmen für Volt Deutschland (Volt)
+D23;Erststimmen für Härtlein, Ronald - Ein Leipziger für Leipzig (WK 152)
+F23;nicht besetzt, da keine Landesliste für diesen Wahlvorschlag (Einzelbewerber)
+D24;Erststimmen für Hummitzsch, Karl-Heinz - KARLKOMMT (WK 152)
+F24;nicht besetzt, da keine Landesliste für diesen Wahlvorschlag (Einzelbewerber)
+D25;Erststimmen für Kohl, Ralf Detlef - WIR sind LEIPZIGER (WK 152)
+F25;nicht besetzt, da keine Landesliste für diesen Wahlvorschlag (Einzelbewerber)
+D26;Erststimmen für Bayer, Martin - www.zeitkaufhaus.de Martin Bayer (WK 152)
+F26;nicht besetzt, da keine Landesliste für diesen Wahlvorschlag (Einzelbewerber)
+D27;Erststimmen für Schöllner, Ulrika - DK Schöllner (WK 153)
+F27;nicht besetzt, da keine Landesliste für diesen Wahlvorschlag (Einzelbewerber)
