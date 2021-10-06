@@ -178,22 +178,12 @@ Row
 -----------------------------------------------------------------------
 
 
+
+
 ### Unverzerrte Karte
 
 ```{r}
-#datasetgebiet <- reactive({
-#  datasetgebiet = selectedGebiet()
-#  if (selectedGebiet() == "Neue Länder (+Berlin)") {
-#    datasetgebiet = "NeueLaender"
-#  }
-#  datasetgebiet
 
-#})
-
-#data <- reactive({
-#  load(file = paste0("Daten/BTW21",datasetgebiet(),".RData")) # BTW21Parteien,BTW21Rang,BTW21wk_shapes
-#  
-#})
 ```
 
 ```{r}
@@ -218,12 +208,11 @@ renderLeaflet({
 
 ```
 
-
 ### Cartogramm
 
 ```{r}
 renderLeaflet({
-  p1 <- mkr.btw21karten(
+  p3 <- mkr.btw21karten(
   maptype = "cartogram",
   Gebiet = selectedGebiet(),
   GebietWK = gebietWK(),
@@ -231,11 +220,11 @@ renderLeaflet({
   vote =selectedStimme(),
   party = selectedPartei(),
   partycol = partycol(),
-  Shapedf = BTW21wk_shapes,
+  Shapedf = BTW21wk_shapes, 
   Rangdf  = BTW21Rang,
   Parteidf = BTW21Parteien
   )
-  p1 #%>% ggplotly() %>% layout(legend = list(orientation = 'h'))
+  p3 #%>% ggplotly() %>% layout(legend = list(orientation = 'h'))
 
 })
 
