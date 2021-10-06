@@ -1,12 +1,26 @@
 ---
 title: "Bundestagswahl 2021"
-author: Volker Holzendorf, Stadtverwaltung Jena, FD Controlling und Statistik
-output: 
+author: "Volker Holzendorf, Stadtverwaltung Jena, FD Controlling und Statistik"
+output:
   flexdashboard::flex_dashboard:
-    
     orientation: rows
     vertical_layout: fill
 runtime: shiny
+resource_files:
+- DataCartogram/JenaParteihochburg_AfD_1_byAnzahl-10.Rdata
+- DataCartogram/JenaParteihochburg_AfD_2_byAnzahl-10.Rdata
+- DataCartogram/JenaParteihochburg_FDP_1_byAnzahl-10.Rdata
+- DataCartogram/JenaParteihochburg_FDP_2_byAnzahl-10.Rdata
+- DataCartogram/JenaParteihochburg_GRÜNE_1_byAnzahl-10.Rdata
+- DataCartogram/JenaParteihochburg_GRÜNE_2_byAnzahl-10.Rdata
+- DataCartogram/JenaParteihochburg_LINKE_1_byAnzahl-10.Rdata
+- DataCartogram/JenaParteihochburg_LINKE_2_byAnzahl-10.Rdata
+- DataCartogram/JenaParteihochburg_SPD_1_byAnzahl-10.Rdata
+- DataCartogram/JenaParteihochburg_SPD_2_byAnzahl-10.Rdata
+- DataCartogram/JenaParteihochburg_UNION_1_byAnzahl-10.Rdata
+- DataCartogram/JenaParteihochburg_UNION_2_byAnzahl-10.Rdata
+- DataCartogram/JenaWahlkreisgewinner_1_byAnzahl-10.Rdata
+- DataCartogram/JenaWahlkreisgewinner_2_byAnzahl-10.Rdata
 ---
 
 ```{r setup, include=FALSE}
@@ -22,6 +36,8 @@ source("R-Codes/010_load packages.r")
 source("R-Codes/mkr_btw21karten.r")
 
 load("Daten/BTW21Jena.RData")
+load("Daten/BTW21Deutschland.RData")
+load("Daten/BTW21NeueLaender.RData")
 #source("R-Codes/mkr_C19JFWplot_ia.r")
 
 ```
@@ -78,6 +94,21 @@ selectInput("selectStimme",
 #})
 ```
 
+### Was zeigen die Karten
+
+Die **linke Karte** ist eine flächentreue Darstellung der Wahlergebnisse der BTW21 nach den ausgewählten Kriterien.
+
+Die **rechte Karte** zeigt dagegen ein Kartogramm, d.h. eine verzerrte Darstellung der gleichen Kriterien. Der Verzerrungsfaktor ist die in der jeweiligen Gebietseinheit erreichte absolute Stimmenanzahl. Gebietseinheiten, in denen mehr Stimmen erreicht wurden, sind größer dargestellt, Gebietseinheiten mit wenigen Stimmen entsprechend kleiner. Damit ist die Darstellung eher angelehnt an den Grundsatz "one (wo)man - von vote".
+
+Die Einfärbungen der einzelnen Wahlkreise ist das erreichte Prozentergebnis im Wahlkreis (Darstellung *Parteihochburg*) bzw. der relative prozentuale Unterschied zwischen erst und Zweitplatzierten (Darstellung *Wahlkreisgewinner*).
+
+Die dickeren Schwarzen Linien sind in Jena die Planungsräume, in Leipzig, die Ortsteile und sonst die Bundesländer.
+
+Die dünneren blauen Linien grenzen die untersuchten Gebietseinheiten ab, wie sie in der hellblauen Kachel *Gebiet* angegeben sind.
+
+Teilweise sind in der Kartogramm- Darstellung weiße Flächen. Das sind leider unvermeidliche Datenfehler bei der Kartogramm-Erstellung, da der Algorithmus der dieser zu Grunde liegt leider kein eindeutiges numerisches Ergebnis liefert.
+
+
 Row
 -----------------------------------------------------------------------
 
@@ -129,7 +160,9 @@ selectedDarstellung <- reactive({
   input$selectDarstellung
 })
 renderValueBox({
-  valueBox(selectedDarstellung(), icon = "fa-award", color = "gold") 
+  valueBox(selectedDarstellung(), 
+           #icon = "fa-award", 
+           color = "gold") 
 })
 ```
 
@@ -180,15 +213,39 @@ Row
 
 
 
-### Unverzerrte Karte
+### **Flächentreue Karte**
 
 ```{r}
+BTW21Parteien <- reactive({
+if (selectedGebiet() == "Jena")         BTW21Parteien = BTW21JParteien
+if (selectedGebiet() == "Deutschland")  BTW21Parteien = BTW21DParteien
+if (selectedGebiet() == "Neue Länder (+Berlin)") BTW21Parteien = BTW21NLParteien
+#if (selectedGebiet() == "Leipzig")     BTW21Parteien = BTW21LParteien
+BTW21Parteien  
+})
+BTW21Rang <- reactive({
+if (selectedGebiet() == "Jena")         BTW21Rang = BTW21JRang
+if (selectedGebiet() == "Deutschland")  BTW21Rang = BTW21DRang
+if (selectedGebiet() == "Neue Länder (+Berlin)") BTW21Rang = BTW21NLRang
+#if (selectedGebiet() == "Leipzig")     BTW21Rang = BTW21LRang
+BTW21Rang
+  })
 
+BTW21wk_shapes <- reactive({
+if (selectedGebiet() == "Jena")         BTW21wk_shapes = BTW21Jwk_shapes
+if (selectedGebiet() == "Deutschland")  BTW21wk_shapes = BTW21Dwk_shapes
+if (selectedGebiet() == "Neue Länder (+Berlin)") BTW21wk_shapes = BTW21NLwk_shapes
+#if (selectedGebiet() == "Leipzig")     BTW21wk_shapes = BTW21Lwk_shapes
+BTW21wk_shapes
+  })
+  
+    
+  
 ```
 
 ```{r}
 renderLeaflet({
-  p2 <- mkr.btw21karten(
+  p1 <- mkr.btw21karten(
   maptype = "normalmap",
   Gebiet = selectedGebiet(),
   GebietWK = gebietWK(),
@@ -196,11 +253,11 @@ renderLeaflet({
   vote =selectedStimme(),
   party = selectedPartei(),
   partycol = partycol(),
-  Shapedf = BTW21wk_shapes, 
-  Rangdf  = BTW21Rang,
-  Parteidf = BTW21Parteien
+  Shapedf = BTW21wk_shapes(), 
+  Rangdf  = BTW21Rang(),
+  Parteidf = BTW21Parteien()
   )
-  p2 #%>% ggplotly() %>% layout(legend = list(orientation = 'h'))
+  p1 #%>% ggplotly() %>% layout(legend = list(orientation = 'h'))
 
 })
 
@@ -208,11 +265,11 @@ renderLeaflet({
 
 ```
 
-### Cartogramm
+### **Kartogramm : one (wo)man - one vote**
 
 ```{r}
 renderLeaflet({
-  p3 <- mkr.btw21karten(
+  p2 <- mkr.btw21karten(
   maptype = "cartogram",
   Gebiet = selectedGebiet(),
   GebietWK = gebietWK(),
@@ -220,11 +277,11 @@ renderLeaflet({
   vote =selectedStimme(),
   party = selectedPartei(),
   partycol = partycol(),
-  Shapedf = BTW21wk_shapes, 
-  Rangdf  = BTW21Rang,
-  Parteidf = BTW21Parteien
+  Shapedf = BTW21wk_shapes(), 
+  Rangdf  = BTW21Rang(),
+  Parteidf = BTW21Parteien()
   )
-  p3 #%>% ggplotly() %>% layout(legend = list(orientation = 'h'))
+  p2 #%>% ggplotly() %>% layout(legend = list(orientation = 'h'))
 
 })
 
