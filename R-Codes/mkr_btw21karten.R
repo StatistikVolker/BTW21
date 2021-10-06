@@ -1,5 +1,9 @@
 # mkr_btw21karten.r
 
+
+
+
+
 # ---------------------------------------------------------------------------
 # Verzerrte Wahlkreiskarten: 
 # ---------------------------------------------------------------------------
@@ -39,6 +43,10 @@ mkr.btw21karten <- function(
         stop("'vote' has to be 'Erststimme' or 'Zweitstimme' only (first letter is enogh.) Please check.")
     }
   }
+  
+  if (vote == 1) {
+    legendlab = "Erststimmenergebnis [%]"
+  }
  
   # correst collabs resp. colgrps
   lcollabs <- length(collabs)
@@ -72,23 +80,16 @@ mkr.btw21karten <- function(
     party3 <- "UNION"
     
   }
-  # Name of Cartogram data.frame
-  cartodata <- paste0("DataCartogram/Jena",Darstellung,party3,"by",cartoweight,"-",itermax,".Rdata")
   
   # join election data with shape data and filter by party
   #btw21 <- merge(wk_spdf, BTW21Parteien %>% filter(Stimme == vote & Gruppenname %in% c(party)), by.x="WKR_NR", by.y="Gebietsnummer")
   if (Darstellung == "Parteihochburg") {
     btw21map <- merge(Shapedf, Parteidf %>% filter(Stimme == vote & Gruppenname %in% c(party) ), by.x="WKR_NR", by.y="Gebietsnummer"  )
-    # Farbskala definieren
-    pal <- colorFactor(
-      palette = c('grey25',alpha(partycol, seq(alphastart, alphaend, length.out = lcollabs))),
-      domain = btw21map$alpha,
-      alpha = TRUE
-    )
+    cartodata <- paste0("DataCartogram/Jena",Darstellung,"_",party3,"_",vote,"_","by",cartoweight,"-",itermax,".Rdata")
     
   } else {
     btw21map <- merge(Shapedf, Rangdf %>% filter(Stimme == vote), by.x="WKR_NR", by.y="Gebietsnummer")  
-    #print(levels(btw21_cont$alpha))
+    cartodata <- paste0("DataCartogram/Jena",Darstellung,"_",vote,"_","by",cartoweight,"-",itermax,".Rdata")
     pal <- colorFactor(
       palette = c('darkblue', 'black', 'purple',"yellow", 'forestgreen',"red"),
       domain = btw21map$Gruppenname,
@@ -130,6 +131,7 @@ mkr.btw21karten <- function(
       )
     
     #print(names(btw21_cont))
+        
     # extract borders of German Länder out of cartogram
     if (Gebiet == "Jena") {
       btw21_contuegebiet <- btw21_cont %>%
@@ -152,12 +154,17 @@ mkr.btw21karten <- function(
         ungroup() %>%
         as_Spatial()
     }
-    print("Schritt 1")
+    #print("Schritt 1")
     if (Darstellung == "Parteihochburg") {
       # Cols in SF-data.frame
-      btw21_cont<- btw21_cont %>% mutate(palcol = pal(alpha)) %>%
-        as_Spatial() ## wieder SpatialPolygonsdataframe
-
+      pal <- colorFactor(
+        palette = c('grey25',alpha(partycol, seq(alphastart, alphaend, length.out = lcollabs))),
+        domain = btw21_cont$alpha,
+        alpha = TRUE
+      )
+      btw21_cont<- btw21_cont %>% mutate(palcol = pal(alpha))
+      btw21_cont<- btw21_cont %>% as_Spatial() ## wieder SpatialPolygonsdataframe
+      
       popuptxt <- paste0(GebietWK, btw21_cont$WKR_NR, ": ", btw21_cont$Gebietsname, "<br>",
                          "Stimmen (%):", btw21_cont$Gruppenname, ": ", btw21_cont$Anzahl," (", mkr.formatwithdigits(btw21_cont$Prozent,1), "%)")
       
@@ -176,7 +183,8 @@ mkr.btw21karten <- function(
                   values = ~alpha,
                   title = paste0("#BTW21: ",party2,"<br>",legendlab),
                   opacity = 1)
-        
+      #m
+      print("Cartogramm_Karte erstellt")  
 
     } else {
       
@@ -200,7 +208,14 @@ mkr.btw21karten <- function(
   }
   
   if (maptype == "normalmap") {
-    
+    if (Darstellung == "Parteihochburg") {
+      # Cols in SF-data.frame
+      pal <- colorFactor(
+        palette = c('grey25',alpha(partycol, seq(alphastart, alphaend, length.out = lcollabs))),
+        domain = btw21map$alpha,
+        alpha = TRUE
+      )
+    }
     # back to WGS84 coordinates
     btw21map<- st_transform(btw21map, 4326) %>% # ("+proj=longlat +datum=WGS84")
       mutate(alpha = cut(as.numeric(Prozent),
@@ -264,8 +279,8 @@ mkr.btw21karten <- function(
         addPolylines(data = btw21_uegebiet,weight = 2,color = "black") # plot border of German Länder
     }
     
-  return(m)
   
 }
-
+  return(m)
+  
 }
