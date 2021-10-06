@@ -6,6 +6,7 @@
 # --------------------------------------------------------------------------------
 
 mkr.btw21_cartogram <- function(
+  btw21, # Dataset
   party, # = c("CDU","CSU") #als Vector if Union
   prtycol,# ="yellow"
   vote= "Zweitstimme", # or "Erststimme" # first letter ist enough
@@ -66,7 +67,8 @@ mkr.btw21_cartogram <- function(
   
   
   # join election data with shape data and filter by party
-  btw21 <- merge(wk_spdf, BTW21Parteien %>% filter(Stimme == vote & Gruppenname %in% c(party)), by.x="WKR_NR", by.y="Gebietsnummer")
+  #btw21 <- merge(wk_spdf, BTW21Parteien %>% filter(Stimme == vote & Gruppenname %in% c(party)), by.x="WKR_NR", by.y="Gebietsnummer")
+  #btw21 <- merge(wbzJ_spdf, BTW21JParteien %>% filter(Stimme == vote & Gruppenname %in% c(party)), by.x="WKR_NR", by.y="Gebietsnummer")
   btw21 <-st_as_sf(btw21) #as simple feature
   # new Coordinates
   btw21 <- st_transform(btw21, coords = c("lon", "lat"), 
