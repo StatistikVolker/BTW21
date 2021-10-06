@@ -18,22 +18,10 @@ source("R-Codes/010_load packages.r")
 # Link to use Icons in R:
 # https://www.displayr.com/adding-icons-to-dashboards-using-font-awesome/
 
-# Farben für für die Linien festlegen
-Indikatorencols <- c("darkblue","darkgreen","orange")
 
-#C19JTH_data <- function() {
-#  read.csv2("https://www.tmasgff.de/fileadmin/user_upload/Gesundheit/COVID-19/Eindaemmungskonzept/Tagesuebersichten/#Uebersicht_Eindaemmungserlass.csv")
-#}
+source("R-Codes/mkr_btw21karten.r")
 
-
-  
-  
-# Datenladen
-# Daten wqerden interaktiv geladen
-#source("R-Codes/011_load_Data.R")
-
-
-source("R-Codes/mkr_btw21cartogramparteien.r")
+load("Daten/BTW21Jena.RData")
 #source("R-Codes/mkr_C19JFWplot_ia.r")
 
 ```
@@ -45,12 +33,13 @@ source("R-Codes/mkr_btw21cartogramparteien.r")
 Sidebar {.sidebar}
 -----------------------------------------------------------------------
 
-### Gebietswahl für Kartendatstelliung
+### Gebietswahl für Kartendatstellung
 
 
 ```{r}
 # Gebietswahl Auswahl
 gebiet <- c( "Deutschland","Neue Länder (+Berlin)","Leipzig", "Jena")
+gebietwk <- c("Wahlkreis","Wahlkreis","Ortsteil","Wahlbezirk")
 selectInput("selectGebiet",
             "Wähle ein Gebiet zur Darstellung der Karten aus",
             gebiet,
@@ -63,7 +52,7 @@ darstellung <- c( "Parteihochburg","Wahlkreisgewinner")
 selectInput("selectDarstellung", 
             "Was soll dargestellt werden?",
             darstellung,
-            selected = "Parteihochburg",
+            selected = "Wahlkreisgewinner",
             multiple = FALSE)
 
 # Erst- oder ZWeit Stimme?
@@ -74,16 +63,19 @@ selectInput("selectStimme",
             selected = "Zweitstimme",
             multiple = FALSE)
 
-if (input$selectDarstellung() == "Parteihochburg"){
-  party <-c( "SPD", "CDU/CSU","GRÜNE","FDP","AfD","DIE LINKE")
-  selectInput("selectPartei", 
-              "Welche Stimme der Wahl soll betrachtet werden?",
-              party,
-              selected = "",
-              multiple = FALSE)
-  
-}
 
+#observe(selectedDarstellung(),{
+#  if (selectedDarstellung() == "Parteihochburg"){
+    party <-c( "SPD", "CDU/CSU","GRÜNE","FDP","AfD","DIE LINKE")
+    partycols <- c("red","black","forestgreen","yellow","darkblue","purple")
+    selectInput("selectPartei", 
+                "falls Parteihochburg: Welche Partei soll betrachtet werden?",
+                party,
+                selected = "",
+                multiple = FALSE)
+    
+#  }
+#})
 ```
 
 Row
@@ -102,8 +94,25 @@ Row
 selectedGebiet <- reactive({
   input$selectGebiet
 })
+
+gebiettxt <- reactive({
+  for (i in 1:length(gebiet)){
+    if (selectedGebiet() == gebiet[i]) gebiettxt = paste0(gebiet[i],", ",gebietwk[i])
+  }
+  gebiettxt
+})
+
+
+gebietWK <- reactive({
+  for (i in 1:length(gebiet)){
+    if (selectedGebiet() == gebiet[i]) gebietWK = gebietwk[i]
+  }
+  gebietWK
+})
+
+
 renderValueBox({
-  valueBox(selectedGebiet(), icon = "fa-calendar", color = "cornflowerblue")
+  valueBox(gebiettxt(), icon = "fa-vote-yea", color = "cornflowerblue")
 })
 ```
 
@@ -120,7 +129,8 @@ selectedDarstellung <- reactive({
   input$selectDarstellung
 })
 renderValueBox({
-  valueBox(selectedDarstellung(), icon = "fa-calendar", color = "darkblue") 
+  valueBox(selectedDarstellung(), icon = "fa-award", color = "gold") 
+})
 ```
 
 
@@ -131,7 +141,7 @@ selectedStimme <- reactive({
   input$selectStimme
 })
 renderValueBox({
-  valueBox(selectStimme(), icon = "fa-calendar", color = "darkblue") # Farbe für Stimmenartß
+  valueBox(selectedStimme(), icon = "fa-car-battery", color = "gold") # Farbe für Stimmenartß
 })
 ```
 
@@ -142,11 +152,24 @@ renderValueBox({
 selectedPartei <- reactive({
   input$selectPartei
 })
-if (selectedDarstellung() == "Parteihochburg") {
+
+
+partycol <- reactive({
+  for (i in 1:length(party)){
+    if (selectedPartei() == party[i]) partycol = partycols[i]
+  }
+  if (selectedDarstellung() != "Parteihochburg") partycol = "white"
+  partycol
+})
+#reactive({
+#
   renderValueBox({
-    valueBox(selectPartei(), icon = "fa-calendar", color = "darkblue") # Box in Parteifarbe
+    #if (selectedDarstellung() == "Parteihochburg") {
+      valueBox(selectedPartei(), icon = "", color = partycol()) # Box in Parteifarbe
+    #}
   })
-}
+#}
+#})
 ```
 
 
@@ -158,25 +181,36 @@ Row
 ### Unverzerrte Karte
 
 ```{r}
+#datasetgebiet <- reactive({
+#  datasetgebiet = selectedGebiet()
+#  if (selectedGebiet() == "Neue Länder (+Berlin)") {
+#    datasetgebiet = "NeueLaender"
+#  }
+#  datasetgebiet
 
+#})
 
-#renderPlotly({
-#  p1 <- mkr.C19JFWplot_ia(
-#    dfplot = dfplot1(), #dataset
-#    Indikator = Indikatorenval[2], # Warnndikator
-#    vglLKs = selectedSK(),
-#    Fusszeile = "7-Tage-Inzidenz: tägliche Linelist des Thüringer Landesamt für Verbraucherschutz", #
-#    warnstufeny = c(35,100,200), # Vector der Warnstufen
-#    warncols = c("gold","orange","red"),
-#    linecol = Indikatorencols[2], # Farbe der Linie
-#    ystepv = c(10,25,50), # y-Achsen Werte
-#    maxy = max(dfplot1()$Werte), # maximaler y Wert
-#    mindat = mindat, # Minimales Datum
-#    maxdat = maxdat, # maximales Datum
-#    stepdat = "week"
-#    
-#  )
-#  p1 %>% ggplotly(tooltip = c("y", "x","alpha")) %>% layout(legend = list(orientation = 'h'))
+#data <- reactive({
+#  load(file = paste0("Daten/BTW21",datasetgebiet(),".RData")) # BTW21Parteien,BTW21Rang,BTW21wk_shapes
+#  
+#})
+```
+
+```{r}
+renderLeaflet({
+  p2 <- mkr.btw21karten(
+  maptype = "normalmap",
+  Gebiet = selectedGebiet(),
+  GebietWK = gebietWK(),
+  Darstellung = selectedDarstellung(),
+  vote =selectedStimme(),
+  party = selectedPartei(),
+  partycol = partycol(),
+  Shapedf = BTW21wk_shapes, 
+  Rangdf  = BTW21Rang,
+  Parteidf = BTW21Parteien
+  )
+  p2 #%>% ggplotly() %>% layout(legend = list(orientation = 'h'))
 
 })
 
@@ -188,6 +222,22 @@ Row
 ### Cartogramm
 
 ```{r}
+renderLeaflet({
+  p1 <- mkr.btw21karten(
+  maptype = "cartogram",
+  Gebiet = selectedGebiet(),
+  GebietWK = gebietWK(),
+  Darstellung = selectedDarstellung(),
+  vote =selectedStimme(),
+  party = selectedPartei(),
+  partycol = partycol(),
+  Shapedf = BTW21wk_shapes,
+  Rangdf  = BTW21Rang,
+  Parteidf = BTW21Parteien
+  )
+  p1 #%>% ggplotly() %>% layout(legend = list(orientation = 'h'))
+
+})
 
 ```
 
