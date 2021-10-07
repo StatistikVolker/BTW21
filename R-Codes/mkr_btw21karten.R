@@ -32,6 +32,17 @@ mkr.btw21karten <- function(
 )
 {
   
+  # Für Cartogram Dateiname - Vermeidung von Umlauten
+  party4 <- party
+  if (party == "GR\u00DCNE") party4 <- "B90G"
+  # print(party)
+  # print(party4)
+
+  Gebiet2 <- Gebiet
+  if (Gebiet == "Neue L\u00E4nder (+Berlin)") { Gebiet2 <- "NLmitB"}
+  # print(Gebiet)
+  # print(Gebiet2)
+  
   # Some checks at the beginning
   # Correst Vote
   if (vote == "Erststimme" | vote == "E") {
@@ -55,8 +66,11 @@ mkr.btw21karten <- function(
     stop("Number of 'colgrps' and 'collabs' do not match! Please ceck.")
     }
   
+  # print(party)
+  # print(Gebiet)
   if (party == "CDU/CSU") party <- "CDU"
-  if (party == "CDU/CSU" & Gebiet == "Deutschland") party <- c("CDU","CSU")
+  if (party == "CDU" & Gebiet == "Deutschland") party <- c("CDU","CSU")
+  # print(party)
   
   if (!(party %in% c("AfD","CDU","CSU","FDP","GR\u00DCNE","DIE LINKE","SPD"))) {
     stop("'party' should be one of 'AfD,CDU,CSU,FDP,GR\u00DCNE,DIE LINKE,SPD'")
@@ -82,15 +96,25 @@ mkr.btw21karten <- function(
     
   }
   
+  unionlab = "CDU"
+  if (Gebiet == "Deutschland") unionlab = "CDU/CSU"
+  ##mit FDP
+  #partycols <- c("red","black","forestgreen","yellow","darkblue","purple")
+  #partylabs <- c( "SPD", unionlab,"B\u00DCNDNIS 90/ DIE GR\u00DCNEN","FDP","AfD","DIE LINKE")
+  #ohne FDP
+  partycols <- c("red","black","forestgreen","darkblue","purple")
+  partylabs <- c( "SPD", unionlab,"B\u00DCNDNIS 90/ DIE GR\u00DCNEN","AfD","DIE LINKE")
+  
   # join election data with shape data and filter by party
   #btw21 <- merge(wk_spdf, BTW21Parteien %>% filter(Stimme == vote & Gruppenname %in% c(party)), by.x="WKR_NR", by.y="Gebietsnummer")
   if (Darstellung == "Parteihochburg") {
+    # print(party)
     btw21map <- merge(Shapedf, Parteidf %>% filter(Stimme == vote & Gruppenname %in% c(party) ), by.x="WKR_NR", by.y="Gebietsnummer"  )
-    cartodata <- paste0("DataCartogram/",Gebiet,"_",Darstellung,"_",party3,"_",vote,"_","by",cartoweight,"-",itermax,".Rdata")
+    cartodata <- paste0("DataCartogram/",Gebiet2,"_",Darstellung,"_",party4,"_",vote,"_","by",cartoweight,"-",itermax,".Rdata")
     
   } else {
     btw21map <- merge(Shapedf, Rangdf %>% filter(Stimme == vote), by.x="WKR_NR", by.y="Gebietsnummer")  
-    cartodata <- paste0("DataCartogram/",Gebiet,"_",Darstellung,"_",vote,"_","by",cartoweight,"-",itermax,".Rdata")
+    cartodata <- paste0("DataCartogram/",Gebiet2,"_",Darstellung,"_",vote,"_","by",cartoweight,"-",itermax,".Rdata")
     pal <- colorFactor(
       palette = c('darkblue', 'black', 'purple',"yellow", 'forestgreen',"red"),
       domain = btw21map$Gruppenname,
@@ -118,6 +142,7 @@ mkr.btw21karten <- function(
   if (maptype == "cartogram") {
   
     # calculate cartogram - only if not allready done
+    # print(cartodata)
     if (file.exists(cartodata) == FALSE) {
       btw21_conto <- cartogram_cont(btw21map, cartoweight,itermax = itermax)
       save(btw21_conto,file=cartodata)
@@ -132,7 +157,7 @@ mkr.btw21karten <- function(
                          right=FALSE)
       )
     
-    #print(names(btw21_cont))
+    # print(names(btw21_cont))
         
     # extract borders of German Länder out of cartogram
     if (Gebiet == "Jena") {
@@ -141,14 +166,15 @@ mkr.btw21karten <- function(
         summarise(Anzahl = sum(Anzahl), do_union = TRUE) %>%
         ungroup() %>%
         as_Spatial()
-      print("Gebiet Jena")
+      # print("Gebiet Jena")
     }
     if (Gebiet == "Leipzig") {
       btw21_contuegebiet <- btw21_cont %>%
-        group_by(plraum_nr) %>% 
+        group_by(stadtbezirknr) %>% 
         summarise(Anzahl = sum(Anzahl), do_union = TRUE) %>%
         ungroup() %>%
         as_Spatial()
+      # print("Leipzig stadtbezirknr")
     }
     if (Gebiet %in% c("Deutschland","Neue L\u00E4nder (+Berlin)")) {
       btw21_contuegebiet <- btw21_cont %>%
@@ -156,7 +182,7 @@ mkr.btw21karten <- function(
         summarise(Anzahl = sum(Anzahl), do_union = TRUE) %>%
         ungroup() %>%
         as_Spatial()
-      print("Gebiet D, NL")
+      # print("Gebiet D, NL")
     }
     #print("Schritt 1")
     if (Darstellung == "Parteihochburg") {
@@ -173,7 +199,8 @@ mkr.btw21karten <- function(
                          "Stimmen (%):", btw21_cont$Gruppenname, ": ", btw21_cont$Anzahl," (", mkr.formatwithdigits(btw21_cont$Prozent,1), "%)")
       
       m<-leaflet(btw21_cont) %>% 
-        #addTiles() %>%  no normal map because of Scartogram 
+        addTiles(attribution = 'Volker Holzendorf, Stadt Jena, FD Finanzen, Team Controlling und Statiistik',
+                 urlTemplate = "") %>%  #no normal map because of Scartogram 
         addPolygons(#data=btw21_cont, 
           fillColor = ~palcol, 
           weight=1,
@@ -188,7 +215,7 @@ mkr.btw21karten <- function(
                   title = paste0("#BTW21: ",party2,"<br>",legendlab),
                   opacity = 1)
       #m
-      print("Cartogramm_Karte erstellt")  
+      # print("Cartogramm_Karte erstellt")  
       
 
     } else {
@@ -202,12 +229,26 @@ mkr.btw21karten <- function(
                          "Erster:", btw21_cont$Gruppenname, " ", btw21_cont$Anzahl," (", mkr.formatwithdigits(btw21_cont$Prozent,1), "%)", "<br>",
                          "Zweiter:", btw21_cont$Gruppenname_2, " ", btw21_cont$Anzahl_2," (", mkr.formatwithdigits(btw21_cont$Prozent_2,1), "%)")
       m <-leaflet() %>% #addTiles() %>% 
+        addTiles(attribution = 'Volker Holzendorf, Stadt Jena, FD Finanzen, Team Controlling und Statiistik',
+                 urlTemplate = "") %>%  #no normal map because of Scartogram 
         addPolygons(data=btw21_cont, 
                     fillColor = ~palcol, 
                     weight=2,
                     fillOpacity = ~alpha,
                     popup = popuptxt) %>%
-        addPolylines(data = btw21_contuegebiet,weight = 2,color = "black") # plot border of German Lander
+        addPolylines(data = btw21_contuegebiet,weight = 2,color = "black")  %>% # plot border of German Lander
+        # Legend
+        addLegend("topright",#pal = pal,
+                  colors = partycols,
+                  labels = partylabs,
+                  #values = ~Gruppenname,
+                  title = paste0("#BTW21: Wahlkreisgewinner","<br>",
+                                 legendlab,"<br>",
+                                 "Farbs\u00E4ttigung gibt Abstand","<br>",
+                                 "zum Zweitplatzierten an. Je heller,","<br>",
+                                 "desto geringer der Abstand zwischen","<br>",
+                                 "Erst- und Zweitplatzierten."),
+                  opacity = 0.7)
       }
     # mDraw Map
   }
@@ -240,7 +281,7 @@ mkr.btw21karten <- function(
     }
     if (Gebiet == "Leipzig") {
       btw21_uegebiet <- btw21map %>%
-        group_by(plraum_nr) %>% 
+        group_by(stadtbezirknr) %>% 
         summarise(Anzahl = sum(Anzahl), do_union = TRUE) %>%
         ungroup() %>%
         as_Spatial()
@@ -260,6 +301,8 @@ mkr.btw21karten <- function(
       # Draw Map
       m<-leaflet(btw21map) %>% 
         #addTiles() %>%  no normal map because of Scartogram 
+        addTiles(attribution = 'Volker Holzendorf, Stadt Jena, FD Finanzen, Team Controlling und Statiistik',
+                 urlTemplate = "") %>%  #no normal map because of Scartogram 
         addPolygons(#data=btw21_cont, 
           fillColor = ~palcol, weight=1,fillOpacity = 1,
           #Define PopUp Text
@@ -272,16 +315,32 @@ mkr.btw21karten <- function(
                   opacity = 1)
       
     } else {
+      names(btw21map)
       popuptxt <- paste0(GebietWK, btw21map$WKR_NR, ": ", btw21map$Gebietsname, "<br>",
                          "Erster:", btw21map$Gruppenname, " ", btw21map$Anzahl," (", mkr.formatwithdigits(btw21map$Prozent,1), "%)", "<br>",
                          "Zweiter:", btw21map$Gruppenname_2, " ", btw21map$Anzahl_2," (", mkr.formatwithdigits(btw21map$Prozent_2,1), "%)")
       m <-leaflet() %>% #addTiles() %>% 
+        addTiles(attribution = 'Volker Holzendorf, Stadt Jena, FD Finanzen, Team Controlling und Statiistik',
+                 urlTemplate = "") %>%  #no normal map because of Scartogram 
         addPolygons(data=btw21map, 
                     fillColor = ~pal(Gruppenname), 
                     weight=2,
                     fillOpacity = ~(Prozent_Diff/max(Prozent_Diff))+0.25,
                     popup = popuptxt) %>%
-        addPolylines(data = btw21_uegebiet,weight = 2,color = "black") # plot border of German Lander
+        addPolylines(data = btw21_uegebiet,weight = 2,color = "black") %>%# plot border of German Lander
+        # Legend
+        addLegend("topright",#pal = pal,
+                  colors = partycols,
+                  labels = partylabs,
+                  #values = ~Gruppenname,
+                  title = paste0("#BTW21: Wahlkreisgewinner","<br>",
+                                 legendlab,"<br>",
+                                 "Farbs\u00E4ttigung gibt Abstand","<br>",
+                                 "zum Zweitplatzierten an. Je heller,","<br>",
+                                 "desto geringer der Abstand zwischen","<br>",
+                                 "Erst- und Zweitplatzierten."),
+                  opacity = 0.7)
+      
     }
     
   
