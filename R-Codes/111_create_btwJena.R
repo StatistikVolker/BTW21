@@ -79,7 +79,9 @@ class(BTW21Jwk_shapes)
 
 save(BTW21JParteien,BTW21JRang,BTW21Jwk_shapes, file= "Daten/BTW21Jena.RData")  
 
-
+names(BTW21JParteien)
+names(BTW21JRang)
+names(BTW21Jwk_shapes)
 
   
   
