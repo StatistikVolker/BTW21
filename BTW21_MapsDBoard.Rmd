@@ -7,20 +7,63 @@ output:
     vertical_layout: fill
 runtime: shiny
 resource_files:
-- DataCartogram/JenaParteihochburg_AfD_1_byAnzahl-10.Rdata
-- DataCartogram/JenaParteihochburg_AfD_2_byAnzahl-10.Rdata
-- DataCartogram/JenaParteihochburg_FDP_1_byAnzahl-10.Rdata
-- DataCartogram/JenaParteihochburg_FDP_2_byAnzahl-10.Rdata
-- DataCartogram/JenaParteihochburg_GRÜNE_1_byAnzahl-10.Rdata
-- DataCartogram/JenaParteihochburg_GRÜNE_2_byAnzahl-10.Rdata
-- DataCartogram/JenaParteihochburg_LINKE_1_byAnzahl-10.Rdata
-- DataCartogram/JenaParteihochburg_LINKE_2_byAnzahl-10.Rdata
-- DataCartogram/JenaParteihochburg_SPD_1_byAnzahl-10.Rdata
-- DataCartogram/JenaParteihochburg_SPD_2_byAnzahl-10.Rdata
-- DataCartogram/JenaParteihochburg_UNION_1_byAnzahl-10.Rdata
-- DataCartogram/JenaParteihochburg_UNION_2_byAnzahl-10.Rdata
-- DataCartogram/JenaWahlkreisgewinner_1_byAnzahl-10.Rdata
-- DataCartogram/JenaWahlkreisgewinner_2_byAnzahl-10.Rdata
+- DataCartogram/Jena_Parteihochburg_AfD_1_byAnzahl-10.Rdata
+- DataCartogram/Jena_Parteihochburg_AfD_2_byAnzahl-10.Rdata
+- DataCartogram/Jena_Parteihochburg_FDP_1_byAnzahl-10.Rdata
+- DataCartogram/Jena_Parteihochburg_FDP_2_byAnzahl-10.Rdata
+- DataCartogram/Jena_Parteihochburg_B90G_1_byAnzahl-10.Rdata
+- DataCartogram/Jena_Parteihochburg_B90G_2_byAnzahl-10.Rdata
+- DataCartogram/Jena_Parteihochburg_LINKE_1_byAnzahl-10.Rdata
+- DataCartogram/Jena_Parteihochburg_LINKE_2_byAnzahl-10.Rdata
+- DataCartogram/Jena_Parteihochburg_SPD_1_byAnzahl-10.Rdata
+- DataCartogram/Jena_Parteihochburg_SPD_2_byAnzahl-10.Rdata
+- DataCartogram/Jena_Parteihochburg_UNION_1_byAnzahl-10.Rdata
+- DataCartogram/Jena_Parteihochburg_UNION_2_byAnzahl-10.Rdata
+- DataCartogram/Jena_Wahlkreisgewinner_1_byAnzahl-10.Rdata
+- DataCartogram/Jena_Wahlkreisgewinner_2_byAnzahl-10.Rdata
+- DataCartogram/Leipzig_Parteihochburg_AfD_1_byAnzahl-10.Rdata
+- DataCartogram/Leipzig_Parteihochburg_AfD_2_byAnzahl-10.Rdata
+- DataCartogram/Leipzig_Parteihochburg_FDP_1_byAnzahl-10.Rdata
+- DataCartogram/Leipzig_Parteihochburg_FDP_2_byAnzahl-10.Rdata
+- DataCartogram/Leipzig_Parteihochburg_B90G_1_byAnzahl-10.Rdata
+- DataCartogram/Leipzig_Parteihochburg_B90G_2_byAnzahl-10.Rdata
+- DataCartogram/Leipzig_Parteihochburg_LINKE_1_byAnzahl-10.Rdata
+- DataCartogram/Leipzig_Parteihochburg_LINKE_2_byAnzahl-10.Rdata
+- DataCartogram/Leipzig_Parteihochburg_SPD_1_byAnzahl-10.Rdata
+- DataCartogram/Leipzig_Parteihochburg_SPD_2_byAnzahl-10.Rdata
+- DataCartogram/Leipzig_Parteihochburg_UNION_1_byAnzahl-10.Rdata
+- DataCartogram/Leipzig_Parteihochburg_UNION_2_byAnzahl-10.Rdata
+- DataCartogram/Leipzig_Wahlkreisgewinner_1_byAnzahl-10.Rdata
+- DataCartogram/Leipzig_Wahlkreisgewinner_2_byAnzahl-10.Rdata
+- DataCartogram/Deutschland_Parteihochburg_AfD_1_byAnzahl-10.Rdata
+- DataCartogram/Deutschland_Parteihochburg_AfD_2_byAnzahl-10.Rdata
+- DataCartogram/Deutschland_Parteihochburg_FDP_1_byAnzahl-10.Rdata
+- DataCartogram/Deutschland_Parteihochburg_FDP_2_byAnzahl-10.Rdata
+- DataCartogram/Deutschland_Parteihochburg_B90G_1_byAnzahl-10.Rdata
+- DataCartogram/Deutschland_Parteihochburg_B90G_2_byAnzahl-10.Rdata
+- DataCartogram/Deutschland_Parteihochburg_LINKE_1_byAnzahl-10.Rdata
+- DataCartogram/Deutschland_Parteihochburg_LINKE_2_byAnzahl-10.Rdata
+- DataCartogram/Deutschland_Parteihochburg_SPD_1_byAnzahl-10.Rdata
+- DataCartogram/Deutschland_Parteihochburg_SPD_2_byAnzahl-10.Rdata
+- DataCartogram/Deutschland_Parteihochburg_UNION_1_byAnzahl-10.Rdata
+- DataCartogram/Deutschland_Parteihochburg_UNION_2_byAnzahl-10.Rdata
+- DataCartogram/Deutschland_Wahlkreisgewinner_1_byAnzahl-10.Rdata
+- DataCartogram/Deutschland_Wahlkreisgewinner_2_byAnzahl-10.Rdata
+- DataCartogram/NLmitB_Parteihochburg_AfD_1_byAnzahl-10.Rdata
+- DataCartogram/NLmitB_Parteihochburg_AfD_2_byAnzahl-10.Rdata
+- DataCartogram/NLmitB_Parteihochburg_FDP_1_byAnzahl-10.Rdata
+- DataCartogram/NLmitB_Parteihochburg_FDP_2_byAnzahl-10.Rdata
+- DataCartogram/NLmitB_Parteihochburg_B90G_1_byAnzahl-10.Rdata
+- DataCartogram/NLmitB_Parteihochburg_B90G_2_byAnzahl-10.Rdata
+- DataCartogram/NLmitB_Parteihochburg_LINKE_1_byAnzahl-10.Rdata
+- DataCartogram/NLmitB_Parteihochburg_LINKE_2_byAnzahl-10.Rdata
+- DataCartogram/NLmitB_Parteihochburg_SPD_1_byAnzahl-10.Rdata
+- DataCartogram/NLmitB_Parteihochburg_SPD_2_byAnzahl-10.Rdata
+- DataCartogram/NLmitB_Parteihochburg_UNION_1_byAnzahl-10.Rdata
+- DataCartogram/NLmitB_Parteihochburg_UNION_2_byAnzahl-10.Rdata
+- DataCartogram/NLmitB_Wahlkreisgewinner_1_byAnzahl-10.Rdata
+- DataCartogram/NLmitB_Wahlkreisgewinner_2_byAnzahl-10.Rdata
+
 ---
 
 ```{r setup, include=FALSE}
@@ -36,6 +79,7 @@ source("R-Codes/010_load packages.r")
 source("R-Codes/mkr_btw21karten.r")
 
 load("Daten/BTW21Jena.RData")
+load("Daten/BTW21Leipzig.RData")
 load("Daten/BTW21Deutschland.RData")
 load("Daten/BTW21NeueLaender.RData")
 #source("R-Codes/mkr_C19JFWplot_ia.r")
@@ -87,7 +131,7 @@ selectInput("selectStimme",
     selectInput("selectPartei", 
                 "falls Parteihochburg: Welche Partei soll betrachtet werden?",
                 party,
-                selected = "",
+                selected = "SPD",
                 multiple = FALSE)
     
 #  }
@@ -215,19 +259,20 @@ Row
 
 ### **Flächentreue Karte**
 
+
 ```{r}
 BTW21Parteien <- reactive({
 if (selectedGebiet() == "Jena")         BTW21Parteien = BTW21JParteien
 if (selectedGebiet() == "Deutschland")  BTW21Parteien = BTW21DParteien
 if (selectedGebiet() == "Neue Länder (+Berlin)") BTW21Parteien = BTW21NLParteien
-#if (selectedGebiet() == "Leipzig")     BTW21Parteien = BTW21LParteien
+if (selectedGebiet() == "Leipzig")     BTW21Parteien = BTW21LParteien
 BTW21Parteien  
 })
 BTW21Rang <- reactive({
 if (selectedGebiet() == "Jena")         BTW21Rang = BTW21JRang
 if (selectedGebiet() == "Deutschland")  BTW21Rang = BTW21DRang
 if (selectedGebiet() == "Neue Länder (+Berlin)") BTW21Rang = BTW21NLRang
-#if (selectedGebiet() == "Leipzig")     BTW21Rang = BTW21LRang
+if (selectedGebiet() == "Leipzig")     BTW21Rang = BTW21LRang
 BTW21Rang
   })
 
@@ -235,7 +280,7 @@ BTW21wk_shapes <- reactive({
 if (selectedGebiet() == "Jena")         BTW21wk_shapes = BTW21Jwk_shapes
 if (selectedGebiet() == "Deutschland")  BTW21wk_shapes = BTW21Dwk_shapes
 if (selectedGebiet() == "Neue Länder (+Berlin)") BTW21wk_shapes = BTW21NLwk_shapes
-#if (selectedGebiet() == "Leipzig")     BTW21wk_shapes = BTW21Lwk_shapes
+if (selectedGebiet() == "Leipzig")     BTW21wk_shapes = BTW21Lwk_shapes
 BTW21wk_shapes
   })
   
