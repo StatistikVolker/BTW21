@@ -26,3 +26,4 @@ stadtbezirknr
 names(BTW21LParteien)
 
 #Sehr gerne für Herrn Holzendorf: heike.melzer@city-leipzig.de
+
